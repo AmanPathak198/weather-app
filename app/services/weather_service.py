@@ -1,8 +1,10 @@
 import httpx
 from config import WeatherAppKey, WeatherBaseURL
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
+from sqlalchemy.orm import Session
+from models import WeatherHistory
 
-async def fetch_weather(city: str):
+async def fetch_weather(city: str, db: Session):
     params = {
         "q": city,
         "appid": WeatherAppKey,
@@ -19,6 +21,18 @@ async def fetch_weather(city: str):
         raise HTTPException(status_code= 500, detail="Weather API Error")
     
     data = response.json()
+
+    weather_record = WeatherHistory(
+        city = data["name"],
+        temperature= data["main"]["temp"],
+        humidity= data["main"]["humidity"],
+        pressure= data["main"]["pressure"],
+        condition= data["weather"][0]["description"]
+    )
+
+    db.add(weather_record)
+    db.commit()
+    db.refresh(weather_record)
 
     return{
         "city": data["name"],

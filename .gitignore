@@ -3,5 +3,3 @@ venv/
 __pycache__/
 *.pyc
 .env
-Books.py
-Books2.py
