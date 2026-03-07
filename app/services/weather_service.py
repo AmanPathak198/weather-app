@@ -51,5 +51,5 @@ async def get_weather_history(db: Session, skip:int = 0, limit: int = 10, city: 
         query = query.filter(WeatherHistory.city == city)
     return query.offset(skip).limit(limit).all()
 
-async def create_report_csv(db: Session):
+async def create_report(db: Session):
     return db.query(WeatherHistory).all()
