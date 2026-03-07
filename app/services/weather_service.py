@@ -43,3 +43,9 @@ async def fetch_weather(city: str, db: Session):
     }
 
 
+async def get_weather_history(db: Session, skip:int = 0, limit: int = 10, city: str | None = None ):
+    query = db.query(WeatherHistory)
+
+    if city:
+        query = query.filter(WeatherHistory.city == city)
+    return query.offset(skip).limit(limit).all()
