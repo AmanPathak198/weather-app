@@ -4,6 +4,7 @@ from fastapi import HTTPException, Depends
 from sqlalchemy.orm import Session
 from models import WeatherHistory
 
+
 async def fetch_weather(city: str, db: Session):
     params = {
         "q": city,
@@ -49,3 +50,6 @@ async def get_weather_history(db: Session, skip:int = 0, limit: int = 10, city: 
     if city:
         query = query.filter(WeatherHistory.city == city)
     return query.offset(skip).limit(limit).all()
+
+async def create_report_csv(db: Session):
+    return db.query(WeatherHistory).all()
